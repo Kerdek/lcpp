@@ -1,1 +1,0 @@
-[{ "directory": "/home/ted/lcpp", "command": "g++ -o test -std=c++2a main.cpp scanner.cpp tokenizer.cpp gc.cpp string.cpp stringbuf.cpp record.cpp term.cpp read_term.cpp print_term.cpp evaluate.cpp abs.cpp app.cpp ref.cpp ext.cpp shr.cpp", "file": "*.cpp" }]
