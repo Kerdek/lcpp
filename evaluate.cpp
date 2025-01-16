@@ -32,7 +32,7 @@ if (k == abs) {
   result = new_abs(parameter(u), new_ext(d, body(u))); }
 else if (k == app) {
   term_app const u = { .p = t.p };
-  push(s, { .t = std::move(u), .o = o });
+  push(s, { .t = u, .o = o });
   t = lhs(u);
   continue; }
 else if (k == ref) {
@@ -41,7 +41,7 @@ else if (k == ref) {
   for (auto [k, v] : o) {
     if (text(k) == text(id(u))) {
       ok = true;
-      t = std::move(v);
+      t = v;
       break; } }
   if (ok) { continue; }
   throw std::string{ "Undefined reference." }; }
@@ -57,7 +57,7 @@ else if (k == ext) {
   continue; }
 else if (k == shr) {
   term_shr const u = { .p = t.p };
-  push(s, { .t = std::move(u), .o = o });
+  push(s, { .t = u, .o = o });
   o = new_record();
   t = ptr(u);
   continue; }
