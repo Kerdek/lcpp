@@ -9,22 +9,20 @@ k_lhs,
 k_rhs,
 k_max };
 
-term_app::term_app(gc::ptr &&p) : p(std::move(p)) { }
-term_app::term_app(term &&t) : p(std::move(t.p)) { }
-term_app::operator term() && { return std::move(p); }
+term_app::operator term() const { return { .p = p }; }
 
-term_app new_app(term const &lhs, term const &rhs) {
-gc::ptr p = gc::alloc();
-p.i->fields.resize(k_max);
-p.i->fields[k_kind] = { .value = app, .type = 1 };
-p.i->fields[k_lhs] = { .value = lhs.p, .type = 0 };
-p.i->fields[k_rhs] = { .value = rhs.p, .type = 0 };
-return p; }
+term_app new_app(term lhs, term rhs) {
+gc::cell *p = gc::alloc();
+p->fields.resize(k_max);
+p->fields[k_kind] = { .value = app, .type = 1 };
+p->fields[k_lhs] = { .value = reinterpret_cast<size_t>(lhs.p), .type = 0 };
+p->fields[k_rhs] = { .value = reinterpret_cast<size_t>(rhs.p), .type = 0 };
+return { .p = p }; }
 
-term lhs(term_app const &t) {
-return gc::ptr(t.p.i->fields[k_lhs].value); }
+term lhs(term_app t) {
+return { .p = reinterpret_cast<gc::cell *>(t.p->fields[k_lhs].value) }; }
 
-term rhs(term_app const &t) {
-return gc::ptr(t.p.i->fields[k_rhs].value); }
+term rhs(term_app t) {
+return { .p = reinterpret_cast<gc::cell *>(t.p->fields[k_rhs].value) }; }
 
 }

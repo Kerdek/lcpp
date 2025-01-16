@@ -7,8 +7,7 @@
 
 namespace lc {
 
-struct record { gc::ptr p;
-record(gc::ptr &&p); };
+struct record { gc::cell *p; };
 
 struct record_iter {
 std::vector<gc::field>::iterator i;
@@ -18,11 +17,11 @@ record_iter &operator++(); };
 
 record new_record();
 
-record_iter begin(record const &d);
-record_iter end(record const &d);
+record_iter begin(record d);
+record_iter end(record d);
 
-term_shr get(record const &d, string const &f);
-void set(record const &d, string const &f, term_shr const &v);
+term_shr get(record d, string f);
+void set(record d, string f, term_shr v);
 
 }
 

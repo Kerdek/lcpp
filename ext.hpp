@@ -7,14 +7,12 @@
 
 namespace lc {
 
-struct term_ext { gc::ptr p;
-term_ext(gc::ptr &&);
-term_ext(term &&);
-operator term() &&; };
+struct term_ext { gc::cell *p;
+operator term() const; };
 
-term_ext new_ext(record const &defs, term const &body);
-record defs(term_ext const &t);
-term body(term_ext const &t);
+term_ext new_ext(record defs, term body);
+record defs(term_ext t);
+term body(term_ext t);
 
 }
 

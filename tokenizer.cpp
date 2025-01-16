@@ -1,5 +1,7 @@
 #include "tokenizer.hpp"
 
+#include <sstream>
+
 namespace txt {
 
 void ws(tokenizer_t &t) {
@@ -25,7 +27,7 @@ if (std::isalpha(c) || c == '_') {
     id.push_back(get(t.s, i));
     i++; }
   t.k = tk_ident; t.t = id; return; }
-throw std::string{ "Unrecognized character sequence." }; }
+throw add_pos(t, "Unrecognized character sequence."); }
 
 void skip(tokenizer_t &t) {
 if (t.k == tk_eof) {
@@ -54,5 +56,10 @@ return line(t.s); }
 
 int col(tokenizer_t &t) {
 return col(t.s); }
+
+std::string add_pos(tokenizer_t &t, std::string s) {
+std::stringstream ss;
+ss << '(' << line(t) << ':' << col(t) << "):" << s;
+return ss.str(); }
 
 }

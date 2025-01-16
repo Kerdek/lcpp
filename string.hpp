@@ -8,17 +8,15 @@
 
 namespace lc {
 
-struct string { gc::ptr p;
-string(gc::ptr &&p); };
+struct string { gc::cell *p; };
 
 string new_string(stringbuf buf, size_t begin, size_t end);
-string clone_string(char const *p);
 
-stringbuf buf(string const &);
-size_t begin(string const &);
-size_t end(string const &);
+stringbuf buf(string s);
+size_t begin(string s);
+size_t end(string s);
 
-std::string_view text(string const &);
+std::string_view text(string s);
 
 }
 

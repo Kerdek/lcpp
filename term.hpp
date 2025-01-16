@@ -12,12 +12,9 @@ ref,
 ext,
 shr };
 
-struct term { gc::ptr p;
-term();
-term(gc::ptr &&p);
-operator bool() const; };
+struct term { gc::cell *p; };
 
-term_kind kind(term const &t);
+term_kind kind(term t);
 
 }
 

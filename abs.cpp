@@ -8,22 +8,20 @@ k_parameter,
 k_body,
 k_max };
 
-term_abs::term_abs(gc::ptr &&p) : p(std::move(p)) { }
-term_abs::term_abs(term &&t) : p(std::move(t.p)) { }
-term_abs::operator term() && { return std::move(p); }
+term_abs::operator term() const { return { .p = p }; }
 
-term_abs new_abs(string const &parameter, term const &body) {
-gc::ptr p = gc::alloc();
-p.i->fields.resize(k_max);
-p.i->fields[k_kind] = { .value = abs, .type = 1 };
-p.i->fields[k_parameter] = { .value = parameter.p, .type = 0 };
-p.i->fields[k_body] = { .value = body.p, .type = 0 };
-return p; }
+term_abs new_abs(string parameter, term body) {
+gc::cell *p = gc::alloc();
+p->fields.resize(k_max);
+p->fields[k_kind] = { .value = abs, .type = 1 };
+p->fields[k_parameter] = { .value = reinterpret_cast<size_t>(parameter.p), .type = 0 };
+p->fields[k_body] = { .value = reinterpret_cast<size_t>(body.p), .type = 0 };
+return { .p = p }; }
 
-string parameter(term_abs const &t) {
-return gc::ptr(t.p.i->fields[k_parameter].value); }
+string parameter(term_abs t) {
+return { .p = reinterpret_cast<gc::cell *>(t.p->fields[k_parameter].value) }; }
 
-term body(term_abs const &t) {
-return gc::ptr(t.p.i->fields[k_body].value); }
+term body(term_abs t) {
+return { .p = reinterpret_cast<gc::cell *>(t.p->fields[k_body].value) }; }
 
 }

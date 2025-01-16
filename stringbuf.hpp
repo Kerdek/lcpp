@@ -5,11 +5,11 @@
 
 namespace lc {
 
-struct stringbuf { gc::ptr p;
-stringbuf(gc::ptr &&p); };
+struct stringbuf { gc::cell *p;
+stringbuf(gc::cell *p); };
 
 stringbuf new_stringbuf(const char *data);
-const char *data(stringbuf const &s);
+const char *data(stringbuf s);
 
 }
 

@@ -6,14 +6,12 @@
 
 namespace lc {
 
-struct term_app { gc::ptr p;
-term_app(gc::ptr &&);
-term_app(term &&);
-operator term() &&; };
+struct term_app { gc::cell *p;
+operator term() const; };
 
-term_app new_app(term const &lhs, term const &rhs);
-term lhs(term_app const &t);
-term rhs(term_app const &t);
+term_app new_app(term lhs, term rhs);
+term lhs(term_app t);
+term rhs(term_app t);
 
 }
 

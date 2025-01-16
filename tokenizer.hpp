@@ -28,6 +28,7 @@ std::string file(tokenizer_t &t);
 int line(tokenizer_t &t);
 int col(tokenizer_t &t);
 
+std::string add_pos(tokenizer_t &t, std::string s);
 
 }
 

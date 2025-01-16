@@ -5,14 +5,12 @@
 
 namespace lc {
 
-record::record(gc::ptr &&p) : p(std::move(p)) { }
-
 std::pair<string, term_shr> record_iter::operator*() {
 gc::field const k = *i;
 gc::field const v = *(i + 1);
 return {
-  gc::ptr(k.value),
-  gc::ptr(v.value) }; }
+  { .p = reinterpret_cast<gc::cell *>(k.value) },
+  { .p = reinterpret_cast<gc::cell *>(v.value) } }; }
 
 bool record_iter::operator!=(record_iter x) {
 return i != x.i; }
@@ -22,29 +20,29 @@ i += 2;
 return *this; }
 
 record new_record() {
-return gc::alloc(); }
+return { .p = gc::alloc() }; }
 
-record_iter begin(record const &d) {
-return { .i = begin(d.p.i->fields) }; }
+record_iter begin(record d) {
+return { .i = begin(d.p->fields) }; }
 
-record_iter end(record const &d) {
-return { .i = end(d.p.i->fields) }; }
+record_iter end(record d) {
+return { .i = end(d.p->fields) }; }
 
-term_shr get(record const &d, string const &f) {
-for (int i = 0; i < d.p.i->fields.size(); i += 2) {
-  gc::field const x = d.p.i->fields[i];
+term_shr get(record d, string f) {
+for (int i = 0; i < d.p->fields.size(); i += 2) {
+  gc::field const x = d.p->fields[i];
   if (text(f) == text(string(reinterpret_cast<gc::cell *>(x.value)))) {
-    return term_shr(reinterpret_cast<gc::cell *>(d.p.i->fields[i + 1].value)); } }
+    return term_shr(reinterpret_cast<gc::cell *>(d.p->fields[i + 1].value)); } }
 return term_shr(); }
 
-void set(record const &d, string const &f, term_shr const &v) {
-for (int i = 0; i < d.p.i->fields.size(); i += 2) {
-  gc::field const x = d.p.i->fields[i];
+void set(record d, string f, term_shr v) {
+for (int i = 0; i < d.p->fields.size(); i += 2) {
+  gc::field const x = d.p->fields[i];
   if (text(f) == text(string(reinterpret_cast<gc::cell *>(x.value)))) {
-    d.p.i->fields[i + 1].value = reinterpret_cast<size_t>(v.p.i);
+    d.p->fields[i + 1].value = reinterpret_cast<size_t>(v.p);
     return; } }
-d.p.i->fields.push_back({ .value = reinterpret_cast<size_t>(f.p.i), .type = 0 });
-d.p.i->fields.push_back({ .value = reinterpret_cast<size_t>(v.p.i), .type = 0 }); }
+d.p->fields.push_back({ .value = reinterpret_cast<size_t>(f.p), .type = 0 });
+d.p->fields.push_back({ .value = reinterpret_cast<size_t>(v.p), .type = 0 }); }
 
 
 }

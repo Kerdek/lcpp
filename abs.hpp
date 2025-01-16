@@ -7,14 +7,12 @@
 
 namespace lc {
 
-struct term_abs { gc::ptr p;
-term_abs(gc::ptr &&);
-term_abs(term &&);
-operator term() &&; };
+struct term_abs { gc::cell *p;
+operator term() const; };
 
-term_abs new_abs(string const &parameter, term const &body);
-string parameter(term_abs const &t);
-term body(term_abs const &t);
+term_abs new_abs(string parameter, term body);
+string parameter(term_abs t);
+term body(term_abs t);
 
 }
 

@@ -15,7 +15,7 @@ if (take(in, d)) {
   return top(in); }
 else {
   auto const c = take(in, txt::tk_ident);
-  if (!c) { throw std::string{ "Expected an identifier." }; }
+  if (!c) { throw txt::add_pos(in, "Expected an identifier."); }
   term const e = parameters(in, d);
   return new_abs(new_string(new_stringbuf(strclone(c->second.data())), 0, c->second.length()), e); } }
 
@@ -32,13 +32,13 @@ if (take(in, txt::tk_rsolidus)) {
 if (take(in, txt::tk_lparen)) {
   term const e = top(in);
   if (!take(in, txt::tk_rparen)) {
-    throw std::string{ "Expected `)`." }; }
+    throw txt::add_pos(in, "Expected `)`."); }
   return e; }
 auto const ci = take(in, txt::tk_ident);
 if (ci) {
   return new_ref(new_string(new_stringbuf(strclone(ci->second.data())), 0, ci->second.length())); }
 else {
-  throw std::string{ "Expected an expression." }; } }
+  throw txt::add_pos(in, "Expected an expression."); } }
 
 static term juxt_rhs(txt::tokenizer_t &in, term lhs) {
 if (juxt_continues(in)) {

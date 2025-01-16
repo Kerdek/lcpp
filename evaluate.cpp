@@ -3,63 +3,39 @@
 #include "abs.hpp"
 #include "app.hpp"
 #include "ext.hpp"
+#include "gc.hpp"
 #include "ref.hpp"
 #include "shr.hpp"
+#include "stack.hpp"
 
-#include <stack>
 #include <string>
 #include <cstring>
-#include <variant>
 
 namespace lc {
 
-struct app_case { term rhs; record o; };
-struct shr_case { term_shr shr; record o; };
-
-using stack = std::stack<std::variant<
-app_case,
-shr_case>>;
-
-struct evaluate_stems {
-term &result, &t;
-stack &s; record &o;
-auto operator()(app_case x) -> bool  {
-  o = x.o;
-  term_kind const k = kind(result);
-  if (k == abs) {
-    term_abs const dxu = std::move(result);
-    record const d = new_record();
-    set(d, parameter(dxu), new_shr(new_ext(o, x.rhs)));
-    t = new_ext(d, body(dxu));
-    return true; }
-  else {
-    throw std::string{ "Expected a function." }; } }
-auto operator()(shr_case x) -> bool {
-  o = x.o;
-  set_ptr(x.shr, result);
-  return false; } };
-
 term evaluate(term t, record o) {
-stack s;
+stack s = new_stack();
+gc::set_root(s.p);
 term result;
-
 for (;;) {
+push(s, { .t = t, .o = o });
 gc::help();
+pop(s);
 term_kind const k = kind(t);
 if (k == abs) {
-  term_abs const u = std::move(t);
+  term_abs const u = { .p = t.p };
   record const d = new_record();
   for (const auto [k, v] : o) {
     if (text(k) != text(parameter(u))) {
       set(d, k, v); } }
   result = new_abs(parameter(u), new_ext(d, body(u))); }
 else if (k == app) {
-  term_app const u = std::move(t);
-  s.push(app_case{ .rhs = rhs(u), .o = o });
+  term_app u = { .p = t.p };
+  push(s, { .t = std::move(u), .o = o });
   t = lhs(u);
   continue; }
 else if (k == ref) {
-  term_ref const u = std::move(t);
+  term_ref const u = { .p = t.p };
   bool ok = false;
   for (auto [k, v] : o) {
     if (text(k) == text(id(u))) {
@@ -69,7 +45,7 @@ else if (k == ref) {
   if (ok) { continue; }
   throw std::string{ "Undefined reference." }; }
 else if (k == ext) {
-  term_ext const u = std::move(t);
+  term_ext const u = { .p = t.p };
   record const d = new_record();
   for (auto const [k, v] : o) {
     set(d, k, v); }
@@ -79,19 +55,34 @@ else if (k == ext) {
   t = body(u);
   continue; }
 else if (k == shr) {
-  term_shr u = std::move(t);
-  s.push(shr_case{ .shr = u, .o = o });
+  term_shr u = { .p = t.p };
+  push(s, { .t = std::move(u), .o = o });
   o = new_record();
   t = ptr(u);
   continue; }
 else {
   throw std::string{ "Evaluate missed a case." }; }
 for (;;) {
-if (s.empty()) {
+if (empty(s)) {
   return result; }
-auto const v = s.top();
-s.pop();
-if (std::visit(evaluate_stems{ result, t, s, o }, v)) {
-  break; }; } } }
+captures x = top(s);
+pop(s);
+o = x.o;
+if (kind(x.t) == app) {
+  term_app const u = { .p = x.t.p };
+  term_kind const k = kind(result);
+  if (k == abs) {
+    term_abs const dxu = { .p = result.p };
+    record const d = new_record();
+    set(d, parameter(dxu), new_shr(new_ext(o, rhs(u))));
+    t = new_ext(d, body(dxu));
+    break; }
+  else {
+    throw std::string{ "Expected a function." }; } }
+else if (kind(x.t) == shr) {
+  term_shr const u = { .p = x.t.p };
+  set_ptr(u, result); }
+else {
+  throw std::string{ "Missed a case." }; } } } }
 
 }

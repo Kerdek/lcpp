@@ -7,13 +7,11 @@
 
 namespace lc {
 
-struct term_ref { gc::ptr p;
-term_ref(gc::ptr &&p);
-term_ref(term &&);
-operator term() &&; };
+struct term_ref { gc::cell *p;
+operator term() const; };
 
-term_ref new_ref(string const &id);
-string id(term_ref const &t);
+term_ref new_ref(string id);
+string id(term_ref t);
 
 }
 

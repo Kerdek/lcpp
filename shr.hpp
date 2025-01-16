@@ -6,15 +6,12 @@
 
 namespace lc {
 
-struct term_shr { gc::ptr p;
-term_shr();
-term_shr(gc::ptr &&p);
-term_shr(term &&);
-operator term() &&; };
+struct term_shr { gc::cell *p;
+operator term() const; };
 
-term_shr new_shr(term const &ptr);
-term ptr(term_shr const &t);
-void set_ptr(term_shr const &t, term const &v);
+term_shr new_shr(term ptr);
+term ptr(term_shr t);
+void set_ptr(term_shr t, term v);
 
 }
 
