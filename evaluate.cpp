@@ -13,10 +13,11 @@
 
 namespace lc {
 
-term evaluate(term t, record o) {
-stack s = new_stack();
-gc::set_root(s.p);
+term evaluate(term t) {
+record o = new_record();
+stack const s = new_stack();
 term result;
+gc::set_root(s.p);
 for (;;) {
 push(s, { .t = t, .o = o });
 gc::help();
@@ -25,12 +26,12 @@ term_kind const k = kind(t);
 if (k == abs) {
   term_abs const u = { .p = t.p };
   record const d = new_record();
-  for (const auto [k, v] : o) {
+  for (auto const [k, v] : o) {
     if (text(k) != text(parameter(u))) {
       set(d, k, v); } }
   result = new_abs(parameter(u), new_ext(d, body(u))); }
 else if (k == app) {
-  term_app u = { .p = t.p };
+  term_app const u = { .p = t.p };
   push(s, { .t = std::move(u), .o = o });
   t = lhs(u);
   continue; }
@@ -55,7 +56,7 @@ else if (k == ext) {
   t = body(u);
   continue; }
 else if (k == shr) {
-  term_shr u = { .p = t.p };
+  term_shr const u = { .p = t.p };
   push(s, { .t = std::move(u), .o = o });
   o = new_record();
   t = ptr(u);
@@ -65,7 +66,7 @@ else {
 for (;;) {
 if (empty(s)) {
   return result; }
-captures x = top(s);
+captures const x = top(s);
 pop(s);
 o = x.o;
 if (kind(x.t) == app) {

@@ -35,7 +35,7 @@ void cycle() {
 std::unordered_set<cell *> s;
 s.max_load_factor(0.5);
 std::stack<cell *> stack;
-stack.push(root);
+if (root) { stack.push(root); }
 while (!stack.empty()) {
   cell *current = stack.top();
   stack.pop();

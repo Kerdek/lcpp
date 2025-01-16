@@ -13,14 +13,14 @@
 #include <iterator>
 #include <string>
 
-int gc_main(std::string const &file) {
+int gc_main(std::string const &input) {
 using namespace lc;
-std::ifstream in{ file };
+std::ifstream in{ input };
 if (!in) {
   throw std::string{ "Unable to open input file for reading." }; }
 using isbi = std::istreambuf_iterator<char>;
 std::string text{ isbi{ in }, isbi{} };
-txt::scanner_t s = txt::scanner(text, file);
+txt::scanner_t s = txt::scanner(text, input);
 txt::tokenizer_t tk = txt::tokenizer(s);
 lc::print(std::cout, evaluate(read(tk), new_record()));
 return 0; }
@@ -34,9 +34,17 @@ try {
     throw std::string{ "No input file specified." }; }
   gc::set_cleanup(1, [](size_t) -> void {});
   gc::set_cleanup(2, [](size_t x) -> void { free(reinterpret_cast<void *>(x)); });
-  int result = gc_main(input);
+  std::ifstream in{ input };
+  if (!in) {
+    throw std::string{ "Unable to open input file for reading." }; }
+  using isbi = std::istreambuf_iterator<char>;
+  std::string text{ isbi{ in }, isbi{} };
+  txt::scanner_t s = txt::scanner(text, input);
+  txt::tokenizer_t tk = txt::tokenizer(s);
+  lc::print(std::cout, evaluate(lc::read(tk)));
+  gc::set_root(0);
   gc::cycle();
-  return result; }
+  return 0; }
 catch (std::string const &e) {
   std::cerr << e;
   return 1; } }
