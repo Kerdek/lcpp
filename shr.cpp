@@ -13,11 +13,11 @@ term_shr new_shr(term ptr) {
 gc::ptr p = gc::alloc();
 resize(p, k_max);
 set_field(p, k_kind, 0, shr);
-set_field(p, k_ptr, -1, reinterpret_cast<gc::value>(ptr.p));
+set_field(p, k_ptr, ptr.p);
 return { .p = p }; }
 
 term ptr(term_shr t) {
-return { .p = reinterpret_cast<gc::ptr>(get_value(t.p, k_ptr)) }; }
+return { .p = get_value<gc::ptr>(t.p, k_ptr) }; }
 
 void set_ptr(term_shr t, term v) {
-set_value(t.p, k_ptr, reinterpret_cast<gc::value>(v.p)); } }
+set_value(t.p, k_ptr, v.p); } }

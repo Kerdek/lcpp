@@ -13,13 +13,13 @@ k_max };
 string new_string(stringbuf buf, size_t begin, size_t end) {
 gc::ptr p = gc::alloc();
 resize(p, k_max);
-set_field(p, k_buf, -1, reinterpret_cast<size_t>(buf.p));
+set_field(p, k_buf, buf.p);
 set_field(p, k_begin, 0, begin);
 set_field(p, k_end, 0, k_end);
 return { .p = p }; }
 
 stringbuf buf(string s) {
-return { .p = reinterpret_cast<gc::ptr>(get_value(s.p, k_buf)) }; }
+return { .p = get_value<gc::ptr>(s.p, k_buf) }; }
 
 size_t begin(string s) {
 return get_value(s.p, k_begin); }

@@ -4,8 +4,8 @@ namespace lc {
 
 std::pair<string, term_shr> record_iter::operator*() {
 return {
-  { .p = reinterpret_cast<gc::ptr>(get_value(p, i)) },
-  { .p = reinterpret_cast<gc::ptr>(get_value(p, i + 1)) } }; }
+  { .p = get_value<gc::ptr>(p, i) },
+  { .p = get_value<gc::ptr>(p, i + 1) } }; }
 
 bool record_iter::operator!=(record_iter x) {
 return i != x.i; }
@@ -25,16 +25,16 @@ return { .p = d.p, .i = get_size(d.p) }; }
 
 term_shr get(record d, string f) {
 for (size_t i = 0; i < get_size(d.p); i += 2) {
-  if (text(f) == text(string(reinterpret_cast<gc::ptr>(get_value(d.p, i))))) {
-    return term_shr(reinterpret_cast<gc::ptr>(get_value(d.p, i + 1))); } }
+  if (text(f) == text(string(get_value<gc::ptr>(d.p, i)))) {
+    return term_shr(get_value<gc::ptr>(d.p, i + 1)); } }
 return term_shr(); }
 
 void set(record d, string f, term_shr v) {
 for (gc::size i = 0; i < get_size(d.p); i += 2) {
-  if (text(f) == text(string(reinterpret_cast<gc::ptr>(get_value(d.p, i))))) {
-    set_value(d.p, i + 1, reinterpret_cast<gc::value>(v.p));
+  if (text(f) == text(string(get_value<gc::ptr>(d.p, i)))) {
+    set_value(d.p, i + 1, v.p);
     return; } }
-push_field(d.p, -1, reinterpret_cast<gc::value>(f.p));
-push_field(d.p, -1, reinterpret_cast<gc::value>(v.p)); }
+push_field(d.p, f.p);
+push_field(d.p, v.p); }
 
 }

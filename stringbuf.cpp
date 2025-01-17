@@ -9,10 +9,10 @@ k_max };
 stringbuf new_stringbuf(char const *data) {
 gc::ptr p = gc::alloc();
 resize(p, k_max);
-set_field(p, k_data, 1, reinterpret_cast<gc::value>(data));
+set_field(p, k_data, 1, data);
 return { .p = p }; }
 
 char const *data(stringbuf s) {
-return reinterpret_cast<char const *>(get_value(s.p, k_data)); }
+return get_value<char const *>(s.p, k_data); }
 
 }
