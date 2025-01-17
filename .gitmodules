@@ -1,0 +1,3 @@
+[submodule "MicroGC"]
+	path = MicroGC
+	url = https://github.com/Kerdek/MicroGC

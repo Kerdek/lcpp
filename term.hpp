@@ -1,7 +1,7 @@
 #ifndef GCPP_TERM_HPP
 #define GCPP_TERM_HPP
 
-#include "microgc/gc.hpp"
+#include "MicroGC/gc.hpp"
 
 namespace lc {
 

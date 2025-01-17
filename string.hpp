@@ -1,7 +1,6 @@
 #ifndef GCPP_STRING_HPP
 #define GCPP_STRING_HPP
 
-#include "microgc/gc.hpp"
 #include "stringbuf.hpp"
 
 #include <string_view>

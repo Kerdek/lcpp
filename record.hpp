@@ -1,7 +1,6 @@
 #ifndef GCPP_RECORD_HPP
 #define GCPP_RECORD_HPP
 
-#include "microgc/gc.hpp"
 #include "shr.hpp"
 #include "string.hpp"
 

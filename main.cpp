@@ -1,5 +1,4 @@
 #include "evaluate.hpp"
-#include "microgc/gc.hpp"
 #include "print.hpp"
 #include "read.hpp"
 #include "scanner.hpp"

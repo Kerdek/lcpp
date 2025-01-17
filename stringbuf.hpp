@@ -1,7 +1,7 @@
 #ifndef GCPP_STRINGBUF_HPP
 #define GCPP_STRINGBUF_HPP
 
-#include "microgc/gc.hpp"
+#include "MicroGC/gc.hpp"
 
 namespace lc {
 
