@@ -2,26 +2,24 @@
 
 namespace lc {
 
-stack::stack(gc::cell *p) : p(p) {}
-stack::stack(stack &&t) : p(t.p) {}
-
 stack new_stack() {
-return gc::alloc(); }
+return { .p = gc::alloc() }; }
 
-void push(stack const &t, captures c) {
-t.p->fields.push_back({ .value = reinterpret_cast<size_t>(c.t.p), .type = 0 });
-t.p->fields.push_back({ .value = reinterpret_cast<size_t>(c.o.p), .type = 0 }); }
+void push(stack t, captures c) {
+push_field(t.p, -1, reinterpret_cast<gc::value>(c.t.p));
+push_field(t.p, -1, reinterpret_cast<gc::value>(c.o.p)); }
 
-captures top(stack const &t) {
+captures top(stack t) {
+gc::size n = get_size(t.p);
 return {
-  reinterpret_cast<gc::cell *>(t.p->fields[t.p->fields.size() - 2].value),
-  reinterpret_cast<gc::cell *>(t.p->fields[t.p->fields.size() - 1].value) }; }
+  .t = { .p = reinterpret_cast<gc::ptr>(get_value(t.p, n - 2)) },
+  .o = { .p = reinterpret_cast<gc::ptr>(get_value(t.p, n - 1)) } }; }
 
-void pop(stack const &t) {
-t.p->fields.pop_back();
-t.p->fields.pop_back(); }
+void pop(stack t) {
+pop_field(t.p);
+pop_field(t.p); }
 
-bool empty(stack const &t) {
-return t.p->fields.empty(); }
+bool empty(stack t) {
+return get_size(t.p) == 0; }
 
 }

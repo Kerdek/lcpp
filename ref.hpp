@@ -1,7 +1,6 @@
 #ifndef GCPP_REF_HPP
 #define GCPP_REF_HPP
 
-#include "gc.hpp"
 #include "string.hpp"
 #include "term.hpp"
 

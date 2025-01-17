@@ -2,12 +2,11 @@
 #define GCPP_EXT_HPP
 
 #include "record.hpp"
-#include "gc.hpp"
 #include "term.hpp"
 
 namespace lc {
 
-struct term_ext { gc::cell *p;
+struct term_ext { gc::ptr p;
 operator term() const; };
 
 term_ext new_ext(record defs, term body);

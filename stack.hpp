@@ -8,15 +8,13 @@ namespace lc {
 
 struct captures { term t; record o; };
 
-struct stack { gc::cell *p;
-stack(gc::cell *p);
-stack(stack &&); };
+struct stack { gc::ptr p; };
 
 stack new_stack();
-void push(stack const &t, captures c);
-captures top(stack const &t);
-void pop(stack const &t);
-bool empty(stack const &t);
+void push(stack t, captures c);
+captures top(stack t);
+void pop(stack t);
+bool empty(stack t);
 
 
 }

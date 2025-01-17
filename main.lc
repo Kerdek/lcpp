@@ -1,1 +1,5 @@
-(\a b.b) (\x.x) (\y.y)
+(\a.a a) (\x f.f x) \di.
+di (\a b f.f a b) \pair.
+di (\a b.a) \car.
+di (\a b.b) \cdr.
+pair (\x.x) (\y.y) cdr

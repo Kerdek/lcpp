@@ -1,12 +1,11 @@
 #ifndef GCPP_STRINGBUF_HPP
 #define GCPP_STRINGBUF_HPP
 
-#include "gc.hpp"
+#include "microgc/gc.hpp"
 
 namespace lc {
 
-struct stringbuf { gc::cell *p;
-stringbuf(gc::cell *p); };
+struct stringbuf { gc::ptr p; };
 
 stringbuf new_stringbuf(const char *data);
 const char *data(stringbuf s);

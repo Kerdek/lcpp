@@ -1,16 +1,11 @@
 #include "record.hpp"
-#include "gc.hpp"
-
-#include <string>
 
 namespace lc {
 
 std::pair<string, term_shr> record_iter::operator*() {
-gc::field const k = *i;
-gc::field const v = *(i + 1);
 return {
-  { .p = reinterpret_cast<gc::cell *>(k.value) },
-  { .p = reinterpret_cast<gc::cell *>(v.value) } }; }
+  { .p = reinterpret_cast<gc::ptr>(get_value(p, i)) },
+  { .p = reinterpret_cast<gc::ptr>(get_value(p, i + 1)) } }; }
 
 bool record_iter::operator!=(record_iter x) {
 return i != x.i; }
@@ -23,26 +18,23 @@ record new_record() {
 return { .p = gc::alloc() }; }
 
 record_iter begin(record d) {
-return { .i = begin(d.p->fields) }; }
+return { .p = d.p, .i = 0 }; }
 
 record_iter end(record d) {
-return { .i = end(d.p->fields) }; }
+return { .p = d.p, .i = get_size(d.p) }; }
 
 term_shr get(record d, string f) {
-for (int i = 0; i < d.p->fields.size(); i += 2) {
-  gc::field const x = d.p->fields[i];
-  if (text(f) == text(string(reinterpret_cast<gc::cell *>(x.value)))) {
-    return term_shr(reinterpret_cast<gc::cell *>(d.p->fields[i + 1].value)); } }
+for (size_t i = 0; i < get_size(d.p); i += 2) {
+  if (text(f) == text(string(reinterpret_cast<gc::ptr>(get_value(d.p, i))))) {
+    return term_shr(reinterpret_cast<gc::ptr>(get_value(d.p, i + 1))); } }
 return term_shr(); }
 
 void set(record d, string f, term_shr v) {
-for (int i = 0; i < d.p->fields.size(); i += 2) {
-  gc::field const x = d.p->fields[i];
-  if (text(f) == text(string(reinterpret_cast<gc::cell *>(x.value)))) {
-    d.p->fields[i + 1].value = reinterpret_cast<size_t>(v.p);
+for (gc::size i = 0; i < get_size(d.p); i += 2) {
+  if (text(f) == text(string(reinterpret_cast<gc::ptr>(get_value(d.p, i))))) {
+    set_value(d.p, i + 1, reinterpret_cast<gc::value>(v.p));
     return; } }
-d.p->fields.push_back({ .value = reinterpret_cast<size_t>(f.p), .type = 0 });
-d.p->fields.push_back({ .value = reinterpret_cast<size_t>(v.p), .type = 0 }); }
-
+push_field(d.p, -1, reinterpret_cast<gc::value>(f.p));
+push_field(d.p, -1, reinterpret_cast<gc::value>(v.p)); }
 
 }

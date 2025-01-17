@@ -3,10 +3,10 @@
 #include "abs.hpp"
 #include "app.hpp"
 #include "ext.hpp"
-#include "gc.hpp"
 #include "ref.hpp"
 #include "shr.hpp"
 #include "stack.hpp"
+#include "record.hpp"
 
 #include <string>
 #include <cstring>
@@ -69,7 +69,8 @@ if (empty(s)) {
 captures const x = top(s);
 pop(s);
 o = x.o;
-if (kind(x.t) == app) {
+term_kind const k = kind(x.t);
+if (k == app) {
   term_app const u = { .p = x.t.p };
   term_kind const k = kind(result);
   if (k == abs) {
@@ -80,7 +81,7 @@ if (kind(x.t) == app) {
     break; }
   else {
     throw std::string{ "Expected a function." }; } }
-else if (kind(x.t) == shr) {
+else if (k == shr) {
   term_shr const u = { .p = x.t.p };
   set_ptr(u, result); }
 else {

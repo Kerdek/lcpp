@@ -1,5 +1,4 @@
 #include "string.hpp"
-#include "gc.hpp"
 
 #include <cstring>
 
@@ -12,21 +11,21 @@ k_end,
 k_max };
 
 string new_string(stringbuf buf, size_t begin, size_t end) {
-gc::cell *p = gc::alloc();
-p->fields.resize(k_max);
-p->fields[k_buf] = { .value = reinterpret_cast<size_t>(buf.p), .type = 0 };
-p->fields[k_begin] = { .value = begin, .type = 1 };
-p->fields[k_end] = { .value = end, .type = 1 };
+gc::ptr p = gc::alloc();
+resize(p, k_max);
+set_field(p, k_buf, -1, reinterpret_cast<size_t>(buf.p));
+set_field(p, k_begin, 0, begin);
+set_field(p, k_end, 0, k_end);
 return { .p = p }; }
 
 stringbuf buf(string s) {
-return reinterpret_cast<gc::cell *>(s.p->fields[k_buf].value); }
+return { .p = reinterpret_cast<gc::ptr>(get_value(s.p, k_buf)) }; }
 
 size_t begin(string s) {
-return s.p->fields[k_begin].value; }
+return get_value(s.p, k_begin); }
 
 size_t end(string s) {
-return s.p->fields[k_end].value; }
+return get_value(s.p, k_end); }
 
 std::string_view text(string s) {
 char const *const p = data(buf(s));

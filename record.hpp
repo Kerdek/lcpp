@@ -1,16 +1,17 @@
 #ifndef GCPP_RECORD_HPP
 #define GCPP_RECORD_HPP
 
-#include "gc.hpp"
+#include "microgc/gc.hpp"
 #include "shr.hpp"
 #include "string.hpp"
 
 namespace lc {
 
-struct record { gc::cell *p; };
+struct record { gc::ptr p; };
 
 struct record_iter {
-std::vector<gc::field>::iterator i;
+gc::ptr p;
+gc::size i;
 std::pair<string, term_shr> operator*();
 bool operator!=(record_iter);
 record_iter &operator++(); };

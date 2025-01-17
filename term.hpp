@@ -1,7 +1,7 @@
 #ifndef GCPP_TERM_HPP
 #define GCPP_TERM_HPP
 
-#include "gc.hpp"
+#include "microgc/gc.hpp"
 
 namespace lc {
 
@@ -12,7 +12,7 @@ ref,
 ext,
 shr };
 
-struct term { gc::cell *p; };
+struct term { gc::ptr p; };
 
 term_kind kind(term t);
 

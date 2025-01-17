@@ -1,12 +1,11 @@
 #ifndef GCPP_SHR_HPP
 #define GCPP_SHR_HPP
 
-#include "gc.hpp"
 #include "term.hpp"
 
 namespace lc {
 
-struct term_shr { gc::cell *p;
+struct term_shr { gc::ptr p;
 operator term() const; };
 
 term_shr new_shr(term ptr);
