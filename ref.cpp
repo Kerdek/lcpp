@@ -1,5 +1,5 @@
 #include "ref.hpp"
-#include "stack.hpp"
+#include "eval_stack.hpp"
 
 #include <string>
 
@@ -11,7 +11,12 @@ k_table,
 k_id,
 k_max };
 
-static bool eval(term &t, term &result, stack s, record &o) {
+static bool prt(term &t, int &pr, bool &rm, print_stack &s, std::ostream &out) {
+term_ref const u = { .p = t.p };
+out << text(id(u));
+return false; }
+
+static bool eval(term &t, term &result, eval_stack s, record &o) {
 term_ref const u = { .p = t.p };
 bool ok = false;
 for (auto [k, v] : o) {
@@ -22,8 +27,7 @@ for (auto [k, v] : o) {
 if (ok) { return true; }
 throw std::string{ "Undefined reference." }; }
 
-static term_table tab = {
-eval };
+static term_table tab = { prt, eval };
 
 term_ref::operator term() const { return { .p = p }; }
 

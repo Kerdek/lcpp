@@ -15,7 +15,7 @@ gc::ptr p = gc::alloc();
 resize(p, k_max);
 set_field(p, k_buf, buf.p);
 set_field(p, k_begin, 0, begin);
-set_field(p, k_end, 0, k_end);
+set_field(p, k_end, 0, end);
 return { .p = p }; }
 
 stringbuf buf(string s) {

@@ -1,5 +1,6 @@
 #include "ext.hpp"
-#include "stack.hpp"
+#include "eval_stack.hpp"
+#include "term.hpp"
 
 namespace lc {
 
@@ -10,7 +11,14 @@ k_defs,
 k_body,
 k_max };
 
-static bool eval(term &t, term &result, stack s, record &o) {
+static bool prt(term &t, int &pr, bool &rm, print_stack &s, std::ostream &out) {
+term_ext const u = { .p = t.p };
+s.push(print_frame{ .t = t, .pr = pr, .rm = rm, .f = [](term xt, term &t, int &pr, bool &rm, print_stack &s, std::ostream &out) -> bool {
+  return false; } });
+t = body(u);
+return true; }
+
+static bool eval(term &t, term &result, eval_stack s, record &o) {
 term_ext const u = { .p = t.p };
 record const d = new_record();
 for (auto const [k, v] : o) {
@@ -21,8 +29,7 @@ o = d;
 t = body(u);
 return true; }
 
-static term_table tab = {
-eval };
+static term_table tab = { prt, eval };
 
 term_ext::operator term() const { return { .p = p }; }
 

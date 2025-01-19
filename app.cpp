@@ -1,7 +1,7 @@
 #include "app.hpp"
 #include "abs.hpp"
 #include "ext.hpp"
-#include "stack.hpp"
+#include "eval_stack.hpp"
 #include "term.hpp"
 
 namespace lc {
@@ -13,7 +13,25 @@ k_lhs,
 k_rhs,
 k_max };
 
-static bool eval(term &t, term &result, stack s, record &o) {
+static bool prt(term &t, int &pr, bool &rm, print_stack &s, std::ostream &out) {
+term_app const u = { .p = t.p };
+if (pr > 0) out << "(";
+s.push({ .t = rhs(u), .pr = pr, .rm = rm, .f = [](term xt, term &t, int &pr, bool &rm, print_stack &s, std::ostream &out) -> bool {
+  out << " ";
+  s.push({ .t = t, .pr = pr, .rm = rm, .f = [](term xt, term &t, int &pr, bool &rm, print_stack &s, std::ostream &out) -> bool {
+    if (pr > 0) out << ")";
+    return false; } });
+  t = xt;
+  rm = pr > 0 || rm;
+  pr = 1;
+  return true;
+}});
+t = lhs(u);
+pr = 0;
+rm = false;
+return true;}
+
+static bool eval(term &t, term &result, eval_stack s, record &o) {
 term_app const u = { .p = t.p };
 push(s, { .t = u, .o = o, .f = [](term xt, term &t, term &result, record &o) -> bool {
   term_app const u = { .p = xt.p };
@@ -25,8 +43,7 @@ push(s, { .t = u, .o = o, .f = [](term xt, term &t, term &result, record &o) -> 
 t = lhs(u);
 return true; }
 
-static term_table tab = {
-eval };
+static term_table tab = { prt, eval };
 
 term_app::operator term() const { return { .p = p }; }
 

@@ -28,9 +28,7 @@ try {
   std::string text{ isbi{ in }, isbi{} };
   txt::scanner_t s = txt::scanner(text, input);
   txt::tokenizer_t tk = txt::tokenizer(s);
-  auto const e = lc::read(tk);
-  lc::print(std::cout, e);
-  std::cout << "\n";
+  term const e = lc::read(tk);
   lc::print(std::cout, evaluate(e));
   gc::set_root(nullptr);
   gc::cycle();

@@ -1,6 +1,6 @@
 #include "abs.hpp"
 #include "ext.hpp"
-#include "stack.hpp"
+#include "eval_stack.hpp"
 #include "record.hpp"
 
 namespace lc {
@@ -12,7 +12,19 @@ k_parameter,
 k_body,
 k_max };
 
-static bool eval(term &t, term &result, stack s, record &o) {
+static bool prt(term &t, int &pr, bool &rm, print_stack &s, std::ostream &out) {
+term_abs const u = { .p = t.p };
+if (!rm) out << "(";
+out << "\\" << text(parameter(u)) << ".";
+s.push({ .t = t, .pr = pr, .rm = rm, .f = [](term xt, term &t, int &pr, bool &rm, print_stack &s, std::ostream &out) -> bool {
+  if (!rm) out << ")";
+  return false; }});
+t = body(u);
+pr = 0;
+rm = true;
+return true; }
+
+static bool eval(term &t, term &result, eval_stack s, record &o) {
 term_abs const u = { .p = t.p };
 record const d = new_record();
 for (auto const [k, v] : o) {
@@ -21,8 +33,7 @@ for (auto const [k, v] : o) {
 result = new_abs(parameter(u), new_ext(d, body(u)));
 return false; }
 
-static term_table tab = {
-eval };
+static term_table tab = { prt, eval };
 
 term_abs::operator term() const { return { .p = p }; }
 

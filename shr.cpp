@@ -1,5 +1,5 @@
 #include "shr.hpp"
-#include "stack.hpp"
+#include "eval_stack.hpp"
 
 namespace lc {
 
@@ -9,7 +9,12 @@ k_evaluator,
 k_ptr,
 k_max };
 
-static bool eval(term &t, term &result, stack s, record &o) {
+static bool prt(term &t, int &pr, bool &rm, print_stack &s, std::ostream &out) {
+term_shr const u = { .p = t.p };
+out << "<shared>";
+return false; }
+
+static bool eval(term &t, term &result, eval_stack s, record &o) {
 term_shr const u = { .p = t.p };
 push(s, { .t = u, .o = o, .f = [](term xt, term &t, term &result, record &o) {
   term_shr const u = { .p = xt.p };
@@ -19,8 +24,7 @@ o = new_record();
 t = ptr(u);
 return true; }
 
-static term_table tab = {
-eval };
+static term_table tab = { prt, eval };
 
 term_shr::operator term() const { return { .p = p }; }
 
