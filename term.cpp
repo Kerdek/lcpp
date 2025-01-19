@@ -4,12 +4,12 @@ namespace lc {
 
 enum {
 k_kind,
-k_evaluator };
+k_table };
 
 term_kind kind(term t) {
 return get_value<term_kind>(t.p, k_kind); }
 
-bool (*evaluator(term t))(term &t, term &result, stack s, record &o) {
-return get_value<bool (*)(term &t, term &result, stack s, record &o)>(t.p, k_evaluator); }
+term_table *table(term t) {
+return get_value<term_table *>(t.p, k_table); }
 
 }

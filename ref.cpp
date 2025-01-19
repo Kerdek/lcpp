@@ -7,7 +7,7 @@ namespace lc {
 
 enum {
 k_kind,
-k_evaluator,
+k_table,
 k_id,
 k_max };
 
@@ -22,13 +22,16 @@ for (auto [k, v] : o) {
 if (ok) { return true; }
 throw std::string{ "Undefined reference." }; }
 
+static term_table tab = {
+eval };
+
 term_ref::operator term() const { return { .p = p }; }
 
 term_ref new_ref(string id) {
 gc::ptr p = gc::alloc();
 resize(p, k_max);
-set_field(p, k_kind, 0, ref);
-set_field(p, k_evaluator, 0, eval);
+set_field<term_kind>(p, k_kind, 0, ref);
+set_field<term_table *>(p, k_table, 0, &tab);
 set_field(p, k_id, id.p);
 return { .p = p }; }
 

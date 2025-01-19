@@ -1,6 +1,7 @@
 #include "evaluate.hpp"
 #include "stack.hpp"
 #include "record.hpp"
+#include "term.hpp"
 
 #include <cstring>
 
@@ -15,8 +16,8 @@ push(s, { .t = t, .o = o });
 gc::help();
 pop(s);
 term result;
-bool (*const f)(term &t, term &result, stack s, record &o) = evaluator(t);
-if (f(t, result, s, o)) {
+term_table *e = table(t);
+if (e->evaluate(t, result, s, o)) {
   continue; }
 for (;;) {
 if (empty(s)) {

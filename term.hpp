@@ -15,10 +15,14 @@ ref,
 ext,
 shr };
 
+
 struct term { gc::ptr p; };
 
+struct term_table {
+  bool (*evaluate)(term &t, term &result, stack s, record &o); };
+
 term_kind kind(term t);
-bool (*evaluator(term t))(term &t, term &result, stack s, record &o);
+term_table *table(term t);
 
 }
 
