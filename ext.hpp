@@ -10,8 +10,6 @@ struct term_ext { gc::ptr p;
 operator term() const; };
 
 term_ext new_ext(record defs, term body);
-record defs(term_ext t);
-term body(term_ext t);
 
 }
 

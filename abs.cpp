@@ -6,11 +6,16 @@
 namespace lc {
 
 enum {
-k_kind,
 k_table,
 k_parameter,
 k_body,
 k_max };
+
+string parameter(term_abs t) {
+return { .p = get_ptr(t.p, k_parameter) }; }
+
+term body(term_abs t) {
+return { .p = get_ptr(t.p, k_body) }; }
 
 static bool prt(term &t, int &pr, bool &rm, print_stack &s, std::ostream &out) {
 term_abs const u = { .p = t.p };
@@ -33,23 +38,22 @@ for (auto const [k, v] : o) {
 result = new_abs(parameter(u), new_ext(d, body(u)));
 return false; }
 
-static term_table tab = { prt, eval };
+static term apply(term l, term r, record o) {
+term_abs const u = { .p = l.p };
+record const d = new_record();
+set(d, parameter(u), new_shr(new_ext(o, r)));
+return new_ext(d, body(u)); }
+
+static term_table tab = { prt, eval, apply };
 
 term_abs::operator term() const { return { .p = p }; }
 
 term_abs new_abs(string parameter, term body) {
 gc::ptr p = gc::alloc();
 resize(p, k_max);
-set_field<term_kind>(p, k_kind, 0, abs);
 set_field<term_table *>(p, k_table, 0, &tab);
 set_field(p, k_parameter, parameter.p);
 set_field(p, k_body, body.p);
 return { .p = p }; }
-
-string parameter(term_abs t) {
-return { .p = get_ptr(t.p, k_parameter) }; }
-
-term body(term_abs t) {
-return { .p = get_ptr(t.p, k_body) }; }
 
 }

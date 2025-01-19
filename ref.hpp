@@ -10,7 +10,6 @@ struct term_ref { gc::cell *p;
 operator term() const; };
 
 term_ref new_ref(string id);
-string id(term_ref t);
 
 }
 

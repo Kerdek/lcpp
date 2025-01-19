@@ -9,8 +9,6 @@ struct term_app { gc::ptr p;
 operator term() const; };
 
 term_app new_app(term lhs, term rhs);
-term lhs(term_app t);
-term rhs(term_app t);
 
 }
 

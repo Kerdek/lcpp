@@ -9,8 +9,6 @@ struct term_shr { gc::ptr p;
 operator term() const; };
 
 term_shr new_shr(term ptr);
-term ptr(term_shr t);
-void set_ptr(term_shr t, term v);
 
 }
 

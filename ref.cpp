@@ -6,10 +6,12 @@
 namespace lc {
 
 enum {
-k_kind,
 k_table,
 k_id,
 k_max };
+
+string id(term_ref t) {
+return { .p = get_ptr(t.p, k_id) }; }
 
 static bool prt(term &t, int &pr, bool &rm, print_stack &s, std::ostream &out) {
 term_ref const u = { .p = t.p };
@@ -27,19 +29,18 @@ for (auto [k, v] : o) {
 if (ok) { return true; }
 throw std::string{ "Undefined reference." }; }
 
-static term_table tab = { prt, eval };
+static term apply(term l, term r, record o) {
+throw new std::string{ "Not a function" }; }
+
+static term_table tab = { prt, eval, apply };
 
 term_ref::operator term() const { return { .p = p }; }
 
 term_ref new_ref(string id) {
 gc::ptr p = gc::alloc();
 resize(p, k_max);
-set_field<term_kind>(p, k_kind, 0, ref);
 set_field<term_table *>(p, k_table, 0, &tab);
 set_field(p, k_id, id.p);
 return { .p = p }; }
-
-string id(term_ref t) {
-return { .p = get_ptr(t.p, k_id) }; }
 
 }
