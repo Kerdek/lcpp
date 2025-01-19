@@ -2,8 +2,8 @@
 
 namespace txt {
 
-scanner_t scanner(std::string const &text, std::string const &file) {
-scanner_t s { .text = text, .off = 0, .file = file, .line = 1, .col = 1 };
+scanner_t scanner(std::string_view text, std::string_view file) {
+scanner_t s { .text = std::string{ text }, .off = 0, .file = std::string{ file }, .line = 1, .col = 1 };
 return s; }
 
 char get(scanner_t &s, size_t i) {

@@ -9,12 +9,12 @@
 namespace txt {
 
 enum token_kind {
-  tk_eof,
-  tk_lparen,
-  tk_rparen,
-  tk_rsolidus,
-  tk_dot,
-  tk_ident };
+tk_eof,
+tk_lparen,
+tk_rparen,
+tk_rsolidus,
+tk_dot,
+tk_ident };
 
 struct tokenizer_t {
 scanner_t &s;

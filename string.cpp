@@ -19,7 +19,7 @@ set_field(p, k_end, 0, k_end);
 return { .p = p }; }
 
 stringbuf buf(string s) {
-return { .p = get_value<gc::ptr>(s.p, k_buf) }; }
+return { .p = get_ptr(s.p, k_buf) }; }
 
 size_t begin(string s) {
 return get_value(s.p, k_begin); }

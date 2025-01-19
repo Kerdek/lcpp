@@ -6,7 +6,8 @@
 
 namespace lc {
 
-struct captures { term t; record o; };
+using eval_stem = bool (*)(term xt, term &t, term &result, record &o);
+struct captures { term t; record o; bool (*f)(term xt, term &t, term &result, record &o); };
 
 struct stack { gc::ptr p; };
 

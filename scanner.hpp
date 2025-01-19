@@ -11,7 +11,7 @@ size_t off;
 std::string file;
 int line, col;  };
 
-scanner_t scanner(std::string const &text, std::string const &file);
+scanner_t scanner(std::string_view text, std::string_view file);
 char get(scanner_t &s, size_t i);
 int line(scanner_t &s);
 int col(scanner_t &s);

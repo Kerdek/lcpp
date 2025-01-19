@@ -28,7 +28,10 @@ try {
   std::string text{ isbi{ in }, isbi{} };
   txt::scanner_t s = txt::scanner(text, input);
   txt::tokenizer_t tk = txt::tokenizer(s);
-  lc::print(std::cout, evaluate(lc::read(tk)));
+  auto const e = lc::read(tk);
+  lc::print(std::cout, e);
+  std::cout << "\n";
+  lc::print(std::cout, evaluate(e));
   gc::set_root(nullptr);
   gc::cycle();
   return 0; }
